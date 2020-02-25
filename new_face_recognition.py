@@ -93,7 +93,7 @@ def main():
                                 dist_list.append(dist)
                             min_value=min(dist_list)
                             if(min_value>0.65):
-                                fin_obj.append('unknow')
+                                fin_obj.append('unknow.jpg')
                             else:
                                 fin_obj.append(all_obj[dist_list.index(min_value)])    
 
@@ -104,7 +104,7 @@ def main():
 
                             cv2.putText(
                                 frame,
-                            fin_obj[rec_position], 
+                            fin_obj[rec_position][:-4],
                             (bounding_box[rec_position,0],bounding_box[rec_position,1]),
                             cv2.FONT_HERSHEY_COMPLEX_SMALL, 
                             0.8, 
