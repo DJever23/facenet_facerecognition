@@ -16,7 +16,7 @@ def main(args):
 def dection():
     # 将目标图片文件夹下的图片地址append进list,传入load_and_align_data(),对图片进行切割（因为其图片参数为list）
     # 这里的位置改为test_img文件夹的绝对路径
-    img_dir='/home/wind/facenet-master/src/test_img/'
+    img_dir='/home/dengjie/dengjie/Face/facenet_facerecognition/test_img'
     img_path_set=[]
     for file in os.listdir(img_dir):
         single_img=os.path.join(img_dir,file)
@@ -24,11 +24,11 @@ def dection():
         print('loading...... :',file)
         img_path_set.append(single_img)
 
-    images = load_and_align_data(img_path_set, 160, 44, 1.0)
+    images = load_and_align_data(img_path_set, 160, 44, 0.5)
 
     
     # 改为emb_img文件夹的绝对路径  
-    emb_dir='/home/wind/facenet-master/src/emb_img'
+    emb_dir='/home/dengjie/dengjie/Face/facenet_facerecognition/emb_img'
     
     if(os.path.exists(emb_dir)==False):
         os.mkdir(emb_dir)

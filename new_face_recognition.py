@@ -31,7 +31,7 @@ def main():
         with tf.Session() as sess:     
             # Load the model 
             # 这里要改为自己的模型位置
-            model='/home/wind/facenet-master/src/models/20170512-110547/'
+            model='/home/dengjie/dengjie/Face/facenet_facerecognition/20170512-110547'
             facenet.load_model(model)
     
             # Get input and output tensors
@@ -44,7 +44,7 @@ def main():
             nrof_images=0
 
             # 这里要改为自己emb_img文件夹的位置
-            emb_dir='/home/wind/facenet-master/src/emb_img'
+            emb_dir='/home/dengjie/dengjie/Face/facenet_facerecognition/emb_img'
             all_obj=[]
             for i in os.listdir(emb_dir):
                 all_obj.append(i)
@@ -59,10 +59,10 @@ def main():
             compare_num=len(compare_emb)
 
             #开启ip摄像头
-            video="http://admin:admin@192.168.0.107:8081/"   #此处@后的ipv4 地址需要修改为自己的地址
+            #video="http://admin:admin@192.168.0.13:8081/"   #此处@后的ipv4 地址需要修改为自己的地址
             # 参数为0表示打开内置摄像头，参数是视频文件路径则打开视频
-            #capture =cv2.VideoCapture(video)
-            capture =cv2.VideoCapture(0)
+            video = 0
+            capture =cv2.VideoCapture(video)
             cv2.namedWindow("camera",1)
             timer=0
             while True:
@@ -140,7 +140,7 @@ def main():
 # 创建load_and_align_data网络
 print('Creating networks and loading parameters')
 with tf.Graph().as_default():
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
     sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
     with sess.as_default():
         pnet, rnet, onet = align.detect_face.create_mtcnn(sess, None)
