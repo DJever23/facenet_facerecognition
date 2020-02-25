@@ -26,7 +26,10 @@ import argparse
 import facenet
 import align.detect_face
 
-
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'  # use GPU with ID=0
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.5  # maximun alloc gpu50% of MEM
+config.gpu_options.allow_growth = True  # allocate dynamically
 
 minsize = 20 # minimum size of face
 threshold = [ 0.6, 0.7, 0.7 ]  # three steps's threshold
@@ -35,7 +38,7 @@ factor = 0.709 # scale factor
 # 创建mtcnn网络，并加载参数
 print('Creating networks and loading parameters')
 with tf.Graph().as_default():
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
     sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
     with sess.as_default():
         pnet, rnet, onet = align.detect_face.create_mtcnn(sess, None)
@@ -124,12 +127,16 @@ with tf.Graph().as_default():
 
         # 从训练数据文件夹中加载图片并剪裁，最后embding，data为dict
         data=load_data('./train_dir/')
+        data = sorted(data.items(), key=lambda x: x[0])
+        data = dict(data)
+        print(type(data))
 
         # keys列表存储图片文件夹类别（几个人）
         keys=[]
         for key in data:
             keys.append(key)
             print('folder:{},image numbers：{}'.format(key,len(data[key])))
+        print(keys)
 
         train_x=[]
         train_y=[]
@@ -171,7 +178,7 @@ print(train_x.shape)
 print(train_y.shape)
 
 
-X_train, X_test, y_train, y_test = train_test_split(train_x, train_y, test_size=.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(train_x, train_y, test_size=0.3, random_state=42)
 print(X_train.shape,y_train.shape,X_test.shape,y_test.shape)
 
 # KNN Classifier  
@@ -184,7 +191,8 @@ def knn_classifier(train_x, train_y):
 classifiers = knn_classifier 
 
 model = classifiers(X_train,y_train)  
-predict = model.predict(X_test)  
+predict = model.predict(X_test)
+print('predict',predict)
 
 accuracy = metrics.accuracy_score(y_test, predict)  
 print ('accuracy: %.2f%%' % (100 * accuracy)  ) 

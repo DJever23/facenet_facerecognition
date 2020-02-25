@@ -69,7 +69,7 @@ factor = 0.709 # scale factor
 # 创建mtcnn网络，并加载参数
 print('Creating networks and loading parameters')
 with tf.Graph().as_default():
-    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=1.0)
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
     sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, log_device_placement=False))
     with sess.as_default():
         pnet, rnet, onet = align.detect_face.create_mtcnn(sess, None)
@@ -126,8 +126,9 @@ with tf.Graph().as_default():
 
         
         #开启ip摄像头
-        video="http://admin:admin@192.168.0.107:8081/"   #此处@后的ipv4 地址需要修改为自己的地址
+        #video="http://admin:admin@192.168.0.13:8081/"   #此处@后的ipv4 地址需要修改为自己的地址
         # 参数为0表示打开内置摄像头，参数是视频文件路径则打开视频
+        video = 0
         capture =cv2.VideoCapture(video)
         cv2.namedWindow("camera",1)
         c=0
@@ -149,6 +150,7 @@ with tf.Graph().as_default():
                 if gray.ndim == 2:
                     img = to_rgb(gray)
                 det,crop_image,j= load_and_align_data(img, 160, 44, 1.0)
+                print('crop_image.shape',type(crop_image))
                 if j:
                     feed_dict = { images_placeholder: crop_image, phase_train_placeholder:False }        
                     emb = sess.run(embeddings, feed_dict=feed_dict) 
@@ -166,7 +168,7 @@ with tf.Graph().as_default():
 
                     for i in range(len(predict)):
                         if predict[i]==0:
-                            result.append('windzu')
+                            result.append('DJ')
                         elif predict[i]==100:
                             result.append('unknown')
 
